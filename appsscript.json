@@ -1,0 +1,14 @@
+{
+  "timeZone": "America/Anchorage",
+  "dependencies": {
+    "libraries": [
+      {
+        "userSymbol": "AlaSQLGS",
+        "version": "10",
+        "libraryId": "1XWR3NzQW6fINaIaROhzsxXqRREfKXAdbKoATNbpygoune43oCmez1N8U"
+      }
+    ]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8"
+}
