@@ -1,13 +1,3 @@
-function copyPasteCells(){ //copy and paste dates and R's from one sheet into all the other sheets, fixed formatting issues
- var ss = SpreadsheetApp.getActiveSpreadsheet(); 
-//  var valuesToCopy = ss.getSheetByName("Solar Deployment").getRange("S7:BY8").getValues(); // value = number of rows
- var sheets = ss.getSheets();
-  for (i=4; i<sheets.length-2; i++){ //start with sheet number 4
-      ss.getSheetByName("UAA-Participant").getRange("S7:BY8").copyTo(sheets[i].getRange("S7:BY8"), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
-      //take values, format, formulas from sheet Solar Deployment and paste it in all the other sheets, PASTE_NORMAL, don't transpose (=false)
-  }
-}
-
 function deleteColumns(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
@@ -15,6 +5,16 @@ function deleteColumns(){
     var last = sheets[i].getLastColumn();
     sheets[i].deleteColumn(last);
     // sheets[i].deleteColumn(15);
+  }
+}
+
+function copyPasteCells(){ //copy and paste dates and R's from one sheet into all the other sheets, fixes formatting issues
+ var ss = SpreadsheetApp.getActiveSpreadsheet(); 
+//  var valuesToCopy = ss.getSheetByName("Solar Deployment").getRange("S7:BY8").getValues(); // value = number of rows
+ var sheets = ss.getSheets();
+  for (i=4; i<sheets.length-2; i++){ //start with sheet number 4
+      ss.getSheetByName("UAA-Participant").getRange("S7:BY8").copyTo(sheets[i].getRange("S7:BY8"), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
+      //take values, format, formulas from sheet Solar Deployment and paste it in all the other sheets, PASTE_NORMAL, don't transpose (=false)
   }
 }
 
