@@ -8,7 +8,7 @@ function duplicateTabs() {
  //Duplicate tabs from template 'Grant':
   var tabs = ss.getSheetByName('Tabs');
 
-  var tabrowsG = tabs.getRange("B2:B").getValues();
+  var tabrowsG = tabs.getRange("B3:B").getValues();
   console.log("values: ",tabrowsG);
   var rowsG = tabrowsG.filter(String).length;
   console.log("rows: ",rowsG);
@@ -42,7 +42,7 @@ function duplicateTabs() {
 
  //Duplicate tabs from template 'Match':
   var tabs = ss.getSheetByName('Tabs');
-  var tabrowsM = tabs.getRange("E2:E").getValues();
+  var tabrowsM = tabs.getRange("F3:F").getValues();
   console.log("values: ",tabrowsM);
   var rowsM = tabrowsM.filter(String).length;
   console.log("rows: ",rowsM);
