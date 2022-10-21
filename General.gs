@@ -2,7 +2,7 @@
 //// BELOW FUNCTIONS ARE FOR GENERAL OPERATIONS ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-function addNewColumns(){
+function addNewColumnsG(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   for (i=1; i<sheets.length-2; i++){
@@ -11,7 +11,7 @@ function addNewColumns(){
   }
 }
 
-function deleteColumns(){
+function deleteColumnsG(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   for (i=1; i<sheets.length-2; i++){
@@ -19,7 +19,7 @@ function deleteColumns(){
   }
 }
 
-function generateSheetList(){
+function generateSheetListG(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   var sheet_names = []
@@ -32,7 +32,7 @@ function generateSheetList(){
   toc_range.setValues(sheet_names)
 }
 
-function copyPasteCells(){
+function copyPasteCellsG(){
  var ss = SpreadsheetApp.getActiveSpreadsheet();
  var sheets = ss.getSheets();
   for (i=2; i<sheets.length-2; i++){
@@ -40,7 +40,7 @@ function copyPasteCells(){
   }
 }
 
-function insertRows(){ //insert more rows in tabs for more personnel and copy formulas along
+function insertRowsG(){ //insert more rows in tabs for more personnel and copy formulas along
  var ss = SpreadsheetApp.getActiveSpreadsheet(); 
  var numRows = ss.getSheetByName("Names").getRange("A125").getValue(); // value = number of rows
  var sheets = ss.getSheets();

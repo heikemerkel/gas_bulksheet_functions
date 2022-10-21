@@ -40,7 +40,7 @@ function deleteAddColumns() { //use this function to delete old date columns and
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
 
-    for (i=2; i<sheets.length-3; i++){ //go through all the sheets from sheet 3 (i=2) through the end minus 2 sheets (ACEP Emp & Hours per PR)
+    for (i=2; i<sheets.length-2; i++){ //go through all the sheets from sheet 3 (i=2) through the end minus 2 sheets (ACEP Emp & Hours per PR)
       //find the old columns with dates before the current payroll date = getRange(3,3), for every old column is finds and deletes, it will add a new one at the end.
         var lastPayDate = sheets[i].getRange(3,3).getValue(); 
         while ((lastPayDate >= sheets[i].getRange(7,19).getValue()) && (sheets[i].getRange(7,19).getValue() !='')) {

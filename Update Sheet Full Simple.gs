@@ -13,14 +13,14 @@ function clearEntriesS(){ //to make sure old numbers don't stay in and only get 
     //var rowcolumn = textFinder.findAll().map(r => ({row: r.getRow(), col: r.getColumn()}));
     var rcs = textFinder[0].getRowIndex()-9;
     fullSheet.getRange(9, 1, rcs, 3).clearContent(); //only clear values, not formatting
-    fullSheet.getRange(9, 8, rcs, 3).clearContent();
+    // fullSheet.getRange(9, 8, rcs, 3).clearContent();
     fullSheet.getRange(9, 14, rcs).clearContent();
     
   //Clear existing entries in expenditures:
-    var textFinder = fullSheet.getRange("A9:A").createTextFinder("1-Personal Services").findAll(); //find the correct row to start
-    var exp = textFinder[0].getRowIndex();
-    //console.log("exp: ", exp);
-    fullSheet.getRange(exp, 3, 9, 3).clearContent(); //only clear values, not formatting  
+    // var textFinder = fullSheet.getRange("A9:A").createTextFinder("1-Personal Services").findAll(); //find the correct row to start
+    // var exp = textFinder[0].getRowIndex();
+    // //console.log("exp: ", exp);
+    // fullSheet.getRange(exp, 3, 9, 3).clearContent(); //only clear values, not formatting  
 }
 
 function fillNamesInFullS() {
@@ -99,12 +99,12 @@ function sumSheetS(column, name){ //helper function --> don't run this, it's get
 
 //Helper functions for each column to prevent timeout issues --> don't run these, getting called from another function
 function calculateLaborS(name){
-    columnsOfInterest = [3,8,9,14]
+    columnsOfInterest = [2,3,4,5,14]
     columnsOfInterest.map(function(column){return sumSheetS(column,name);})
 }
 
 function calculateExpS(name){
-        columnsOfInterest = [3,14]
+        columnsOfInterest = [14]
         columnsOfInterest.map(function(column){return sumSheetS(column,name);})
 }
 

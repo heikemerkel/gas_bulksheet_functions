@@ -14,14 +14,14 @@ function clearEntries(){ //to make sure old numbers don't stay in and only get p
     var rcs = textFinder[0].getRowIndex()-9;
     fullSheet.getRange(9, 1, rcs).clearContent(); //only clear values, not formatting
     fullSheet.getRange(9, 2, rcs+1, 3).clearContent(); 
-    fullSheet.getRange(9, 8, rcs+1, 3).clearContent();
+    // fullSheet.getRange(9, 8, rcs+1, 3).clearContent();
     fullSheet.getRange(9, 14, rcs+1).clearContent();
     
   //Clear existing entries in expenditures:
-    var textFinder = fullSheet.getRange("A9:A").createTextFinder("1-Personal Services").findAll(); //find the correct row to start
-    var exp = textFinder[0].getRowIndex();
-    //console.log("exp: ", exp);
-    fullSheet.getRange(exp, 3, 9, 3).clearContent(); //only clear values, not formatting  
+    // var textFinder = fullSheet.getRange("A9:A").createTextFinder("1-Personal Services").findAll(); //find the correct row to start
+    // var exp = textFinder[0].getRowIndex();
+    // //console.log("exp: ", exp);
+    // fullSheet.getRange(exp, 3, 9, 3).clearContent(); //only clear values, not formatting  
 }
 
 function fillNamesInFull() {
@@ -102,26 +102,6 @@ function calculateLabor2(name){
     columnsOfInterest.map(function(column){return sumSheet(column,name);})
 }
 
-function calculateLabor3(name){
-    columnsOfInterest = [3]
-    columnsOfInterest.map(function(column){return sumSheet(column,name);})
-}
-
-function calculateLabor8(name){
-    columnsOfInterest = [8]
-    columnsOfInterest.map(function(column){return sumSheet(column,name);})
-}
-
-function calculateLabor9(name){
-    columnsOfInterest = [9]
-    columnsOfInterest.map(function(column){return sumSheet(column,name);})
-}
-
-function calculateLabor10(name){
-    columnsOfInterest = [10]
-    columnsOfInterest.map(function(column){return sumSheet(column,name);})
-}
-
 function calculateLabor14(name){
     columnsOfInterest = [14]
     columnsOfInterest.map(function(column){return sumSheet(column,name);})
@@ -132,7 +112,7 @@ function calculateExp(name){
         columnsOfInterest.map(function(column){return sumSheet(column,name);})
 }
 
-//fill in Numbers for Labor for each name and column (2,3,8,9,10,14) --> these are set up to run as a trigger in the middle of the night once a week
+//fill in Numbers for Labor for each name and column (2,14) --> these are set up to run as a trigger in the middle of the night
 function fillNumbersInFullLabor2() { //sum all the labor numbers from each tab for each name in sheet 'Full'
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var fullSheet = ss.getSheetByName('Full');
@@ -142,50 +122,6 @@ function fillNumbersInFullLabor2() { //sum all the labor numbers from each tab f
     var namesFull = fullSheet.getRange(9,1,rowy-8,1).getValues(); //read all the names + Health Insurance into array
     console.log("namesFull: ", namesFull);
     namesFull.map(calculateLabor2);
-}
-
-function fillNumbersInFullLabor3() { //sum all the labor numbers from each tab for each name in sheet 'Full'
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var fullSheet = ss.getSheetByName('Full');
-    var textFinder1 = fullSheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll(); //find the correct end row
-    var rowy = textFinder1[0].getRowIndex();
-    //console.log("rowy: ", rowy);
-    var namesFull = fullSheet.getRange(9,1,rowy-8,1).getValues(); //read all the names + Health Insurance into array
-    console.log("namesFull: ", namesFull);
-    namesFull.map(calculateLabor3);
-}
-
-function fillNumbersInFullLabor8() { //sum all the labor numbers from each tab for each name in sheet 'Full'
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var fullSheet = ss.getSheetByName('Full');
-    var textFinder1 = fullSheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll(); //find the correct end row
-    var rowy = textFinder1[0].getRowIndex();
-    //console.log("rowy: ", rowy);
-    var namesFull = fullSheet.getRange(9,1,rowy-8,1).getValues(); //read all the names + Health Insurance into array
-    console.log("namesFull: ", namesFull);
-    namesFull.map(calculateLabor8);
-}
-
-function fillNumbersInFullLabor9() { //sum all the labor numbers from each tab for each name in sheet 'Full'
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var fullSheet = ss.getSheetByName('Full');
-    var textFinder1 = fullSheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll(); //find the correct end row
-    var rowy = textFinder1[0].getRowIndex();
-    //console.log("rowy: ", rowy);
-    var namesFull = fullSheet.getRange(9,1,rowy-8,1).getValues(); //read all the names + Health Insurance into array
-    console.log("namesFull: ", namesFull);
-    namesFull.map(calculateLabor9);
-}
-
-function fillNumbersInFullLabor10() { //sum all the labor numbers from each tab for each name in sheet 'Full'
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var fullSheet = ss.getSheetByName('Full');
-    var textFinder1 = fullSheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll(); //find the correct end row
-    var rowy = textFinder1[0].getRowIndex();
-    //console.log("rowy: ", rowy);
-    var namesFull = fullSheet.getRange(9,1,rowy-8,1).getValues(); //read all the names + Health Insurance into array
-    console.log("namesFull: ", namesFull);
-    namesFull.map(calculateLabor10);
 }
 
 function fillNumbersInFullLabor14() { //sum all the labor numbers from each tab for each name in sheet 'Full'
