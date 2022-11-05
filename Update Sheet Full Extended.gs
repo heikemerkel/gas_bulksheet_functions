@@ -63,11 +63,14 @@ function copyQueryFormulas() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var fullSheet = ss.getSheetByName('Full');
   fullSheet.getRange(9,9).setFormula('=iferror(QUERY(\'*ST TOAD Labor\'!$A$1:$G,"select sum(G) where E=\'"&$A9&"\'and A=\'"&$A$2&"\' and not E=\'\' label sum(G)\'\'"),"")');
+  fullSheet.getRange(9,8).setFormula('=iferror(QUERY(\'*ST TOAD Labor\'!$A$1:$G,"select sum(F) where E=\'"&$A9&"\'and A=\'"&$A$2&"\' and not E=\'\' label sum(F)\'\'"),"")');
   //setFormula('=query(arrayformula(Master!A:K), "SELECT B, C, D, E, F, G, H, I, J, K where A = \'"& \'Select Your Event\'!A3 &"\' Order By I, J",1)')
   var textFinder = fullSheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll();
   var rcs = textFinder[0].getRowIndex()-9;
-  var fillDownRange = fullSheet.getRange(9,9,rcs);//how many rows?
-fullSheet.getRange(9,9).copyTo(fillDownRange);
+  var fillDownRangeA = fullSheet.getRange(9,9,rcs);
+  var fillDownRangeH = fullSheet.getRange(9,8,rcs);
+  fullSheet.getRange(9,9).copyTo(fillDownRangeA);//for amount in column 9
+  fullSheet.getRange(9,8).copyTo(fillDownRangeH);//for hours in column 8
 }
 
 
