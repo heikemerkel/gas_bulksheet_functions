@@ -58,6 +58,19 @@ function fillNamesInFull() {
     }
 }
 
+//Copy formulas for *ST TOAD Labor in column 9 after cleaning
+function copyQueryFormulas() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var fullSheet = ss.getSheetByName('Full');
+  fullSheet.getRange(9,9).setFormula('=iferror(QUERY(\'*ST TOAD Labor\'!$A$1:$G,"select sum(G) where E=\'"&$A9&"\'and A=\'"&$A$2&"\' and not E=\'\' label sum(G)\'\'"),"")');
+  //setFormula('=query(arrayformula(Master!A:K), "SELECT B, C, D, E, F, G, H, I, J, K where A = \'"& \'Select Your Event\'!A3 &"\' Order By I, J",1)')
+  var textFinder = fullSheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll();
+  var rcs = textFinder[0].getRowIndex()-9;
+  var fillDownRange = fullSheet.getRange(9,9,rcs);//how many rows?
+fullSheet.getRange(9,9).copyTo(fillDownRange);
+}
+
+
 function sumSheet(column, name){ //helper function --> don't run this, it's getting called from another function
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var fullSheet = ss.getSheetByName('Full');
@@ -145,4 +158,52 @@ function fillNumbersInFullExp() { //sum all the exp numbers from each tab for ea
     var expFull = fullSheet.getRange(rowy+2,1,9,1).getValues(); //read the categories from "1-Personal Services" to "7-F&A" into array
     console.log("expFull: ", expFull);
     expFull.map(calculateExp);
+}
+
+//This function fills in numbers in exp column 9 for entries that are not in the labor tables, it does overwrite the formula in the cell and so it wouldn't work next time the sheet gets populated. This is solved by first copying/pasting formulas into column 9 (function 'copyQueryFormulas') after function 'fillNamesInFull' has run and then running this function.
+function sumExpMissingOnly() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var fullsheet = ss.getSheetByName('Full');
+    var sheets = ss.getSheets();
+  var textFinder1 = fullsheet.getRange("A9:A").createTextFinder("Health Insurance (Acct 1949)").findAll(); //find the correct end row
+    var rowy = textFinder1[0].getRowIndex();
+  var rows = fullsheet.getRange(9,9,rowy-8).getValues();  
+    Logger.log('rows: '+rows.length);
+    for (var m=0; m<rows.length ; m++){
+      if (rows[m] ==""){ 
+        Logger.log(m+9)
+        var name = fullsheet.getRange(m+9,1).getValues();
+        Logger.log(name);
+        var valued = 0; //reset value to 0
+        for (k=2; k<sheets.length-3; k++){ //loop through all the sheet from sheet 3 (k=2) to sum up the values by name and column, first sheet is sheets[0]
+            //console.log("k: ", k);
+            var exclude = sheets[k].getName().indexOf('*ST'); //if tab '*ST' is not found ==> value is -1, include it in the summation, this makes it possible to create subtask tabs that don't get
+                                                              // included in summation in sheet Full
+            if (-1 == exclude) {
+                var sheetsI = sheets[k].getRange("A9:A").getValues();
+                //console.log("sheets: ", sheetsI);
+                var textFinder = sheets[k].getRange("A9:A").createTextFinder(name[0]).matchEntireCell(true).findAll();
+                if (textFinder.length !=0){
+                  //var same = textFinder[0].getValues();
+                  //console.log("textFinder: ", same);
+                  var row = textFinder[0].getRow();
+                  //console.log("row: ", row);
+                  addValue = sheets[k].getRange(row,9).getValue();
+                  //console.log("addValue: ", addValue);
+                  valued = +valued + +addValue; //the double plus forces numbers (it wants to turn numbers into strings at random occasions)
+                  //console.log("valued: ", valued);
+                }
+            }    
+         }
+        if (valued != 0) { //write the value in sheet Full
+            var textFinder = fullsheet.getRange("A9:A").createTextFinder(name[0]).matchEntireCell(true).findAll();
+            if (textFinder.length !=0){
+              var i = textFinder[0].getRow();
+              var test = fullsheet.getRange(i,9).setValue(valued);
+              Logger.log('valued: '+valued);}
+         }
+        
+        
+      }
+  }
 }
