@@ -18,7 +18,9 @@ function fillNamesFromTOAD() {
   var sheets = ss.getSheets();
 
     for (i=2; i<sheets.length-2; i++){ //go through all the sheets from sheet 3 (i=2) through the end minus 2 sheets (ACEP Emp & Hours per PR)
-        
+        var exclude = sheets[i].getName().indexOf('*ST'); //if tab '*ST' is not found ==> value is -1, include it in the summation, this makes it possible to create subtask tabs that don't get
+                                                        // included in summation in sheet Full
+        if (-1 == exclude) {
         //get the fund code
         var fund = sheets[i].getRange(3,1).getValue();
         //var actc = sheets[i].getRange(5,1).getValue(); //need to set activity code in a cell somewhere
@@ -77,6 +79,7 @@ function fillNamesFromTOAD() {
             else {sheets[i].getRange(8,sheets[i].getLastColumn()).setValue(1)}
         }
         if (sheets[i].getRange(7,19).getValue() !='') {sheets[i].getRange(6,19).setValue("Payroll projections (end date)")};
+    }
     }
 }
 

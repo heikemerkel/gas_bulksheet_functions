@@ -40,6 +40,44 @@ function copyPasteCellsG(){
   }
 }
 
+function updateEncumFA(){ //updates F&A rates for encumbrances using the formula in column 14 of each tab
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();    
+  for (i=3; i<sheets.length-3; i++){
+    var textFinder = sheets[i].getRange("A9:A").createTextFinder("7-F&A").findAll();
+    var rcs = textFinder[0].getRowIndex();
+    console.log("rcs: ",rcs);
+    sheets[i].getRange(rcs,14).copyTo(sheets[i].getRange(rcs,10), SpreadsheetApp.CopyPasteType.PASTE_FORMULA,
+false);
+  }
+}
+
+function updateColor(){ //updates Grant Total color formats in each sheet (watch for Match Total!)
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var fullSheet = ss.getSheetByName('Full');
+  var sheets = ss.getSheets();    
+  for (i=3; i<sheets.length-3; i++){
+    var textFinder = sheets[i].getRange("A9:A").createTextFinder("Grand TOTAL").findAll();
+    var rcs = textFinder[0].getRowIndex();
+    console.log("rcs: ",rcs);
+    fullSheet.getRange(44,3).copyTo(sheets[i].getRange(rcs,3), SpreadsheetApp.CopyPasteType.PASTE_FORMAT,false);
+    fullSheet.getRange(44,3).copyTo(sheets[i].getRange(rcs+1,12), SpreadsheetApp.CopyPasteType.PASTE_FORMAT,false);
+  }
+}
+
+function updateR00(){ //updates formatting for R05 and PR date in row 2+3, col 3
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var fullSheet = ss.getSheetByName('Full');
+  var sheets = ss.getSheets();    
+  for (i=2; i<sheets.length-3; i++){
+    var exclude = sheets[i].getName().indexOf('*ST'); //if tab '*ST' is not found ==> value is -1, include it in the summation, this makes it possible to create subtask tabs 
+                                                      //that don't get included in summation in sheet Full
+    if (-1 == exclude) {
+       fullSheet.getRange(2,3,2,1).copyTo(sheets[i].getRange(2,3,2,1), SpreadsheetApp.CopyPasteType.PASTE_FORMAT,false);
+    }
+  }
+}
+
 function insertRowsG(){ //insert more rows in tabs for more personnel and copy formulas along
  var ss = SpreadsheetApp.getActiveSpreadsheet(); 
  var numRows = ss.getSheetByName("Names").getRange("A125").getValue(); // value = number of rows
