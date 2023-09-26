@@ -1,96 +1,95 @@
 ////////////////////////////////////////////////////////////////////////////
-//// BELOW FUNCTIONS CREATE THE ORIGINAL BUDGET SHEET WITH ALL THE TABS ////
+//// BELOW FUNCTIONS ARE FOR GENERAL OPERATIONS ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-function duplicateTabs() {
+function addNewColumnsG(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  
- //Duplicate tabs from template 'Grant':
-  var tabs = ss.getSheetByName('Tabs');
-
-  var tabrowsG = tabs.getRange("B3:B").getValues();
-  console.log("values: ",tabrowsG);
-  var rowsG = tabrowsG.filter(String).length;
-  console.log("rows: ",rowsG);
-  var grantTabs = tabs.getSheetValues(2,2,rowsG,1); //(row, column, no of rows, no of columns)
-  var grantFunds = tabs.getSheetValues(2,3,rowsG,1); 
-  var grantOrgs = tabs.getSheetValues(2,4,rowsG,1);
-  console.log("grantTabs: ",grantTabs)
-  
-  var templateSheetG = ss.getSheetByName('Grant');
- 
-  for (var i=0; i<grantTabs.length; i++){ 
-      var newSheetG = templateSheetG.copyTo(ss);
-      var protections = templateSheetG.getProtections(SpreadsheetApp.ProtectionType.RANGE);
-      
-      // Duplicate Template
-      newSheetG.setName(grantTabs[i]);  // sets tab name
-      console.log("i: ",i);
-      console.log("sheet name: ",grantTabs[i]);
-      newSheetG.getRange("A3").setValue(grantFunds[i]);  //puts Fund in A3
-      newSheetG.getRange("A4").setValue(grantOrgs[i]);   //puts Org in A4
-
-      for (var j = 0; j < protections.length; j++) {
-        var protection = protections[j];
-        var protectedRange = protection.getRange().getA1Notation();
-        var newProtection = newSheetG.getRange(protectedRange).protect();
-      }
-
-      //ss.setActiveSheet(newSheet);  
-      var protection = newSheetG.protect().setDescription(grantTabs[i]);
-      }
-
- //Duplicate tabs from template 'Match':
-  var tabs = ss.getSheetByName('Tabs');
-  var tabrowsM = tabs.getRange("F3:F").getValues();
-  console.log("values: ",tabrowsM);
-  var rowsM = tabrowsM.filter(String).length;
-  console.log("rows: ",rowsM);
-  if (rowsM!=0){
-    var matchTabs = tabs.getSheetValues(2,5,rowsM,1); //(row, column, no of rows, no of columns)
-    var matchFunds = tabs.getSheetValues(2,6,rowsM,1); 
-    var matchOrgs = tabs.getSheetValues(2,7,rowsM,1);
-    console.log("sheet name: ",matchTabs);
-    var templateSheetM = ss.getSheetByName('Match');
-
-    for (var i=0; i<matchTabs.length; i++){
-        var newSheetM = templateSheetM.copyTo(ss);
-        var protections = templateSheetM.getProtections(SpreadsheetApp.ProtectionType.RANGE);
-        
-        // Duplicate Template
-        newSheetM.setName(matchTabs[i]);  // sets tab name
-        console.log("sheet name: ",matchTabs[i]);
-        newSheetM.getRange("A3").setValue(matchFunds[i]);  //puts Fund in A3
-        newSheetM.getRange("A4").setValue(matchOrgs[i]);   //puts Org in A4
-
-        for (var j = 0; j < protections.length; j++) {
-          var protection = protections[j];
-          var protectedRange = protection.getRange().getA1Notation();
-          var newProtection = newSheetM.getRange(protectedRange).protect();
-        }
-
-        //ss.setActiveSheet(newSheet);  
-        var protection = newSheetM.protect().setDescription(matchTabs[i]);
-        }
+  var sheets = ss.getSheets();
+  for (i=1; i<sheets.length-2; i++){
+    sheets[i].insertColumnAfter(16);
+    sheets[i].getRange(7,17,1,1).setValue('Start date for projections')
   }
-  
-   // delete helper sheets and clean up:            
-   ss.deleteSheet(ss.getSheetByName("Grant"));
-   ss.deleteSheet(ss.getSheetByName("Match"));
-   var sheets = ss.getSheets();
-    ss.setActiveSheet(ss.getSheetByName('ACEP Emp'));
-    ss.moveActiveSheet(sheets.length); //move to end
-    SpreadsheetApp.getActive().getSheetByName('ACEP Emp').hideSheet(); //and hide
-    ss.setActiveSheet(ss.getSheetByName('Hours per PR PMEC'));
-    ss.moveActiveSheet(sheets.length);
-    SpreadsheetApp.getActive().getSheetByName('Hours per PR PMEC').hideSheet();
-
 }
 
-function fillInFromProposal(){ //insert all the numbers from the proposal budget into each tab
-
+function deleteColumnsG(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  for (i=1; i<sheets.length-2; i++){
+    sheets[i].deleteColumn(17);
+  }
 }
 
-function cleanUp() { //delete REF# and other cells that aren't needed
-  
+function generateSheetListG(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var sheet_names = []
+  for (i=0; i< sheets.length; i++) {
+    sheet_names.push([sheets[i].getName()])
+  }
+  //console.log("sheet_names: ", sheet_names);
+  var toc_sheet = ss.getSheetByName('Tabs');
+  var toc_range = toc_sheet.getRange(1,2,sheet_names.length, sheet_names[0].length)
+  toc_range.setValues(sheet_names)
 }
+
+function copyPasteCellsG(){
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ var sheets = ss.getSheets();
+  for (i=2; i<sheets.length-2; i++){
+    sheets[i].getRange(3,3,1,1).setValue("=Full!C3")
+  }
+}
+
+function updateEncumFA(){ //updates F&A rates for encumbrances using the formula in column 14 of each tab
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();    
+  for (i=3; i<sheets.length-3; i++){
+    var textFinder = sheets[i].getRange("A9:A").createTextFinder("7-F&A").findAll();
+    var rcs = textFinder[0].getRowIndex();
+    console.log("rcs: ",rcs);
+    sheets[i].getRange(rcs,14).copyTo(sheets[i].getRange(rcs,10), SpreadsheetApp.CopyPasteType.PASTE_FORMULA,
+false);
+  }
+}
+
+function updateColor(){ //updates Grant Total color formats in each sheet (watch for Match Total!)
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var fullSheet = ss.getSheetByName('Full');
+  var sheets = ss.getSheets();    
+  for (i=3; i<sheets.length-3; i++){
+    var textFinder = sheets[i].getRange("A9:A").createTextFinder("Grand TOTAL").findAll();
+    var rcs = textFinder[0].getRowIndex();
+    console.log("rcs: ",rcs);
+    fullSheet.getRange(44,3).copyTo(sheets[i].getRange(rcs,3), SpreadsheetApp.CopyPasteType.PASTE_FORMAT,false);
+    fullSheet.getRange(44,3).copyTo(sheets[i].getRange(rcs+1,12), SpreadsheetApp.CopyPasteType.PASTE_FORMAT,false);
+  }
+}
+
+function updateR00(){ //updates formatting for R05 and PR date in row 2+3, col 3
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var fullSheet = ss.getSheetByName('Full');
+  var sheets = ss.getSheets();    
+  for (i=2; i<sheets.length-3; i++){
+    var exclude = sheets[i].getName().indexOf('*ST'); //if tab '*ST' is not found ==> value is -1, include it in the summation, this makes it possible to create subtask tabs 
+                                                      //that don't get included in summation in sheet Full
+    if (-1 == exclude) {
+       fullSheet.getRange(2,3,2,1).copyTo(sheets[i].getRange(2,3,2,1), SpreadsheetApp.CopyPasteType.PASTE_FORMAT,false);
+    }
+  }
+}
+
+function insertRowsG(){ //insert more rows in tabs for more personnel and copy formulas along
+ var ss = SpreadsheetApp.getActiveSpreadsheet(); 
+ var numRows = ss.getSheetByName("Names").getRange("A125").getValue(); // value = number of rows
+ var sheets = ss.getSheets();
+  for (i=3; i<sheets.length-2; i++){ //start with sheet number 3
+    sheets[i].insertRowsAfter(9, numRows)//(start at row 9, how many rows to add?)
+    var lCol = sheets[i].getLastColumn(); //how many columns to copy
+      for (j=1; j<=numRows; j++) { 
+      sheets[i].getRange(9, 6, 1, lCol).copyTo(sheets[i].getRange(9+j,6,1,lCol), SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
+      //take formulas from row 9 and paste it in all just created rows, one at the time, only PASTE_FORMULA, don't transpose (=false)
+      }
+  }
+}
+
+
